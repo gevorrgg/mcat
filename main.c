@@ -70,6 +70,24 @@ static ssize_t try_write(int fd_from, int fd_to, enum Error *err)
 	}
 }
 
+
+static int handle_error(enum Error error_code)
+{
+	switch (error_code)
+	{
+			case READ_ERROR:
+				print_error("Read error\n");
+				return 3;
+			case WRITE_ERROR:
+				print_error("Write error\n");
+				return 4;
+			case UNEXPECTED_WRITE_RESULT:
+				print_error("Unexpected write result\n");
+				return 5;
+	}
+}
+
+
 int mycat(const char *path, int fd_to)
 {
 	/* opening the file for read */
@@ -90,18 +108,8 @@ int mycat(const char *path, int fd_to)
 
 	if (write_status < 0)
 	{
-		switch (error_code)
-		{
-			case READ_ERROR:
-				print_error("Read error\n");
-				return 3;
-			case WRITE_ERROR:
-				print_error("Write error\n");
-				return 4;
-			case UNEXPECTED_WRITE_RESULT:
-				print_error("Unexpected write result\n");
-				return 5;
-		}
+		/* Some error happened */
+		return handle_error(error_code);
 	}
 
 	if (close(fd) < 0)
@@ -115,12 +123,30 @@ int mycat(const char *path, int fd_to)
 
 int main(int argc, char *argv[])
 {
-	if (argc != 2)
-	{
-		print_error("Improper argument count for 'cat'\n");
+	
+	ssize_t status;
+	enum Error error_code;
 
-		return 1;
+	if (argc < 2)
+	{
+		while ((status = try_write(STDIN, STDOUT, &error_code)) > 0)
+		{
+			/* reading untill EOF typed or some error occured */
+		}
+
+	 	if (status < 0)
+		{
+			return handle_error(error_code);
+		}
 	}
 
-	return mycat(argv[1], STDOUT);
+	for (int i = 1; i < argc; i++)
+	{
+		int status_code = mycat(argv[i], STDOUT);
+
+		if (status_code != 0)
+			return status_code;
+	}
+
+	return 0;
 }
