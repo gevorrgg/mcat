@@ -1,4 +1,4 @@
-## mycat
+## mcat
 
 C implementation of the Unix cat command with safe I/O and error handling using only syscalls.
 
