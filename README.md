@@ -4,23 +4,23 @@ C implementation of the Unix cat command with safe I/O and error handling using 
 
 ## Description
 
-mycat reads the content of a file and writes it to standard output (terminal).
+mcat reads the content of a file and writes it to standard output (terminal).
 It handles interrupted system calls (EINTR) and other read/write errors safely.
 
 ## Usage
 ``` bash
-./mycat <filename>
+./mcat <filename>
 ```
 
 ## Example:
 
 ``` bash
-./mycat example.txt
+./mcat example.txt
 ````
 
 ## Error Handling
 
-mycat prints error messages to standard error in case of:
+mcat prints error messages to standard error in case of:
 
 - Improper argument count
 - File open errors
@@ -38,5 +38,5 @@ mycat prints error messages to standard error in case of:
 
 ## Compilation
 ``` bash
-gcc -o mycat main.c
+gcc -o mcat main.c
 ```
